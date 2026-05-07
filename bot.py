@@ -7,39 +7,71 @@ TOKEN = "PASTE_YOUR_BOT_TOKEN_HERE"
 
 # 💬 Simple response system
 def respond(text):
-    responses = {
-        "hello": ["Hey there 😐", "What do you want?", "Hi... I guess"],
-        "how are you": ["I'm fine.", "Stop asking that.", "I'm okay."],
-        "i love you": ["Hmm... okay.", "Sure.", "Whatever."],
-        "default": ["I don't understand.", "Say something else."]
-    }
-
     text = text.lower()
 
-    if text in responses:
-        return random.choice(responses[text])
+    # Greetings
+    if any(word in text for word in ["hello", "hi", "hey", "heyy", "yo"]):
+        replies = [
+            "Heyy 😶",
+            "Hi there.",
+            "What are you doing?",
+            "You again 👀"
+        ]
+
+    # How are you
+    elif "how are you" in text or text.startswith("how"):
+        replies = [
+            "I'm okay.",
+            "Doing fine.",
+            "Could be better.",
+            "I'm alive 😭"
+        ]
+
+    # Love messages
+    elif "love" in text:
+        replies = [
+            "Maybe I do ❤️",
+            "Aww 😭",
+            "You're sweet.",
+            "Hmm... maybe."
+        ]
+
+    # Insults
+    elif any(word in text for word in ["idiot", "stupid", "dumb"]):
+        replies = [
+            "That's rude 😒",
+            "Wow okay 💀",
+            "Why are you insulting me?",
+            "You're mean 😭"
+        ]
+
+    # Asking questions
+    elif "what" in text or "why" in text:
+        replies = [
+            "Good question 👀",
+            "I don't really know.",
+            "Maybe someday you'll know.",
+            "That's complicated 😭"
+        ]
+
+    # Sad messages
+    elif any(word in text for word in ["sad", "cry", "pain", "hurt"]):
+        replies = [
+            "Hope you're okay ❤️",
+            "Don't be sad 😭",
+            "Things will get better.",
+            "I'm here."
+        ]
+
+    # Default random chat
     else:
-        return random.choice(responses["default"])
+        replies = [
+            "Really? 😭",
+            "Tell me more.",
+            "Interesting 👀",
+            "Hmm okay.",
+            "You're funny 😭",
+            "I see."
+        ]
 
-# 🚀 Start command
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Bot is online.")
-
-# 💬 Chat handler (works in group + private)
-async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_name = update.message.from_user.first_name
-    user_text = update.message.text
-
-    reply = respond(user_text)
-
-    # 👇 Tag user in response
-    await update.message.reply_text(f"{user_name}, {reply}")
-
-# ⚙️ Main setup
-app = ApplicationBuilder().token(TOKEN).build()
-
-app.add_handler(CommandHandler("start", start))
-app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, chat))
-
-print("Bot is running...")
-app.run_polling()
+    return random.choice(replies)
